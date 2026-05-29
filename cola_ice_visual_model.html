@@ -739,8 +739,6 @@
 
       ctx.clearRect(0, 0, w, h);
       ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, h);
-      ctx.fillStyle = C.greenFill;
-      ctx.fillRect(pad.left, y(6), plotW, y(0) - y(6));
 
       drawGrid(ctx, pad, plotW, plotH, w, h, 15, 30, "时间 (min)", "温度 (°C)");
       drawRightAxis(ctx, pad, plotW, plotH, w, "可乐浓度 (%)");
