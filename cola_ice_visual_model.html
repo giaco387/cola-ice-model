@@ -743,6 +743,22 @@
       return null;
     }
 
+    function findThresholdCrossings(rows, xKey, yKey, target) {
+      const crossings = [];
+      for (let i = 1; i < rows.length; i++) {
+        const a = rows[i - 1], b = rows[i];
+        const av = a[yKey], bv = b[yKey];
+        if ((av - target) * (bv - target) <= 0 && av !== bv) {
+          const ratio = (target - av) / (bv - av);
+          crossings.push({
+            xValue: a[xKey] + ratio * (b[xKey] - a[xKey]),
+            value: target
+          });
+        }
+      }
+      return crossings;
+    }
+
     function drawThresholdMarker(ctx, px, py, color, label, detail, pad, plotW, plotH) {
       ctx.save();
       ctx.fillStyle = color;
@@ -830,6 +846,15 @@
       drawRightAxis(ctx, pad, plotW, plotH, w, "浓度 (%)");
       drawLine(ctx, scan.map(r => [r.ice, r.temperature]), x, yTemp, C.blue, 2.5);
       drawLine(ctx, scan.map(r => [r.ice, r.concentration]), x, yPct, C.red, 2);
+
+      findThresholdCrossings(scan, "ice", "temperature", 4).forEach(crossing => {
+        drawThresholdMarker(ctx, x(crossing.xValue), yTemp(crossing.value), C.blue,
+          "4°C", `${crossing.xValue.toFixed(0)} g 冰`, pad, plotW, plotH);
+      });
+      findThresholdCrossings(scan, "ice", "concentration", 92).forEach(crossing => {
+        drawThresholdMarker(ctx, x(crossing.xValue), yPct(crossing.value), C.red,
+          "92% 浓度", `${crossing.xValue.toFixed(0)} g 冰`, pad, plotW, plotH);
+      });
 
       const minConc = scan.reduce((best, row) =>
         row.concentration < best.concentration ? row : best, scan[0]);
