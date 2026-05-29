@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>一杯可乐放多少冰？</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --surface2: #f9fafb;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --dim: #9ca3af;
+      --blue: #2563eb;
+      --blue2: #3b82f6;
+      --red: #dc2626;
+      --green: #16a34a;
+      --gold: #d97706;
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--bg);
+      line-height: 1.5;
+    }
+
+    main {
+      width: min(1120px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 40px 0 56px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .opening-comic {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-bottom: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background: var(--surface);
+    }
+
+    .takeaway {
+      margin: -2px 0 20px;
+      padding: 0 0 18px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .takeaway p {
+      margin: 0;
+      font-size: clamp(17px, 2.2vw, 23px);
+      line-height: 1.55;
+      font-weight: 700;
+    }
+
+    .takeaway p + p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: clamp(15px, 1.8vw, 19px);
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: clamp(26px, 4.5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 620px;
+    }
+
+    .fixed-box {
+      min-width: 224px;
+      max-width: 256px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fixed-box strong {
+      display: block;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(240px, 300px) 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+
+    /* ── Panel ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* ── Slider ── */
+    .control { padding: 20px 22px; }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+    }
+
+    .control-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .ice-value {
+      font-size: 36px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -1px;
+      color: var(--blue);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 1px 4px rgba(37,99,235,.4), 0 0 0 3px rgba(37,99,235,.12);
+      cursor: grab;
+      transition: box-shadow .15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      box-shadow: 0 1px 6px rgba(37,99,235,.5), 0 0 0 5px rgba(37,99,235,.18);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border: none;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 1px 4px rgba(37,99,235,.4);
+      cursor: grab;
+    }
+
+    .ticks {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      color: var(--dim);
+      font-size: 11px;
+    }
+
+
+
+    /* ── Chart ── */
+    .chart {
+      padding: 18px 20px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart h2 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .chart canvas {
+      display: block;
+      width: 100%;
+      flex: 1;
+      min-height: 200px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface2);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .key { display: inline-flex; align-items: center; gap: 6px; }
+
+    .swatch { width: 18px; height: 2.5px; border-radius: 99px; background: var(--blue2); }
+    .swatch.red { background: var(--red); }
+    .swatch.green { background: var(--green); }
+    .swatch.gold { background: var(--gold); }
+
+    /* ── Note ── */
+    .note { padding: 18px 20px; margin-top: 16px; }
+    .note p { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 8px; }
+    .note p:last-child { margin-bottom: 0; }
+    .note strong { color: var(--text); }
+
+    /* ── Modeling ── */
+    .modeling { padding: 24px; margin-top: 16px; }
+
+    .section-chip {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 99px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .modeling h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: var(--text);
+    }
+
+    .modeling-grid { display: grid; gap: 10px; }
+
+    .model-block {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface2);
+      padding: 16px 18px;
+    }
+
+    .model-block h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--blue);
+      margin-bottom: 8px;
+    }
+
+    .model-block p {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .formula {
+      margin-top: 10px;
+      padding: 11px 14px;
+      border-radius: 8px;
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: var(--text);
+    }
+
+    .symbols {
+      margin-top: 8px;
+      font-size: 12.5px;
+      color: var(--dim);
+      line-height: 1.65;
+    }
+
+    .score-charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .chart-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .score-charts canvas {
+      display: block;
+      width: 100%;
+      height: 160px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface2);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 940px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      main { width: calc(100vw - 20px); padding-top: 24px; }
+      .chart canvas { height: 260px; }
+      .ice-value { font-size: 28px; }
+    }
+
+    @media (max-width: 560px) {
+      .hero { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <img class="opening-comic" src="assets/opening-comic.png" alt="两个人在夏天讨论一杯可乐到底要加多少冰的漫画" />
+      <div>
+        <h1>一杯可乐放多少冰？</h1>
+      </div>
+    </header>
+
+    <section class="takeaway" aria-label="核心结论">
+      <p>300 ml 的可乐，我建议加 200 g 冰。</p>
+      <p>加冰越多，浓度不一定越低；在一定观察时间内，加入非常多的冰块反而会让浓度变高。</p>
+    </section>
+
+    <section class="hero">
+      <div class="panel control">
+        <div class="control-header">
+          <span class="control-label">加入冰量</span>
+          <span class="ice-value" id="iceMassVal">200 g</span>
+        </div>
+        <input id="iceMass" type="range" min="0" max="300" step="5" value="200" />
+        <div class="ticks">
+          <span>0 g</span><span>100 g</span><span>200 g</span><span>300 g</span>
+        </div>
+      </div>
+
+      <div class="panel chart" style="margin-top:0">
+        <h2>降温过程</h2>
+        <canvas id="curveCanvas" width="760" height="340"></canvas>
+        <div class="legend">
+          <span class="key"><i class="swatch"></i>温度</span>
+          <span class="key"><i class="swatch red"></i>浓度</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero" style="margin-top:16px">
+      <div class="panel control">
+        <div class="control-header">
+          <span class="control-label">观察时间</span>
+          <span class="ice-value" id="timeVal">5 min</span>
+        </div>
+        <input id="timeMins" type="range" min="1" max="15" step="0.5" value="5" />
+        <div class="ticks">
+          <span>1 min</span><span>5 min</span><span>10 min</span><span>15 min</span>
+        </div>
+      </div>
+
+      <div class="panel chart" style="margin-top:0">
+        <h2>加冰量对结果的影响</h2>
+        <canvas id="scanCanvas" width="760" height="340"></canvas>
+        <div class="legend">
+          <span class="key"><i class="swatch"></i>温度</span>
+          <span class="key"><i class="swatch red"></i>浓度</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel modeling">
+      <h2>完整建模过程</h2>
+      <div class="modeling-grid">
+        <div class="model-block">
+          <h3>0. 基准条件</h3>
+          <p>默认模拟一杯 300 g 可乐，初始温度 25°C；冰块初始温度 -18°C；环境温度 25°C；默认观察时间为 5 分钟。页面上方滑块只改变加入冰量，下方观察时间滑块只改变读图时刻。</p>
+        </div>
+
+        <div class="model-block">
+          <h3>1. 建模对象与基本假设</h3>
+          <p>研究对象是一杯可乐和若干冰块组成的开放热系统。模型只追踪可乐温度、剩余冰量、已融化冰水量和可乐浓度。为了让页面可以实时计算，模型做了以下简化：可乐近似为水溶液；杯中液体温度均匀；冰块用一个等效温度表示；杯壁和空气对可乐的加热合并为一个环境传热项；冰块形状不逐块建模，而用冰量近似表示总接触面积。</p>
+          <p class="symbols">符号说明：m 表示质量，单位 g；T 表示温度，单位 °C；Q 表示热量，单位 J；c 表示比热容，单位 J/(g·°C)；Δt 表示数值模拟的时间步长。</p>
+        </div>
+
+        <div class="model-block">
+          <h3>2. 传热原理：牛顿冷却定律的等效形式</h3>
+          <p>传热的物理基础是牛顿冷却定律：单位时间传递的热量近似正比于温差。更标准的形式是 hA(T_hot - T_cold)Δt，其中 h 是换热系数，A 是接触面积。页面模型把难以直接测量的 h 和 A 合并成等效参数。</p>
+          <div class="formula">
+            <math display="block">
+              <mrow><mi>Q</mi><mo>=</mo><mi>h</mi><mi>A</mi><mo>(</mo><msub><mi>T</mi><mtext>hot</mtext></msub><mo>-</mo><msub><mi>T</mi><mtext>cold</mtext></msub><mo>)</mo><mi>Δt</mi></mrow>
+            </math>
+          </div>
+          <p class="symbols">符号说明：h 是换热系数；A 是换热面积；T_hot 和 T_cold 分别是热端和冷端温度。</p>
+        </div>
+
+        <div class="model-block">
+          <h3>3. 环境给可乐的热量</h3>
+          <p>环境项表示空气和杯壁把热量传回可乐。这里没有显式写入可乐质量，而是因为环境换热主要由杯子外表面积、杯壁材料和空气流动决定；这些因素在当前页面中被视为固定，并合并到 k_env 中。</p>
+          <div class="formula">
+            <math display="block">
+              <mrow><msub><mi>Q</mi><mtext>env</mtext></msub><mo>=</mo><msub><mi>k</mi><mtext>env</mtext></msub><mo>(</mo><msub><mi>T</mi><mtext>air</mtext></msub><mo>-</mo><msub><mi>T</mi><mtext>cola</mtext></msub><mo>)</mo><mi>Δt</mi></mrow>
+            </math>
+          </div>
+          <p class="symbols">符号说明：Q_env 是环境传给可乐的热量；k_env 是环境等效传热系数；T_air 是室温；T_cola 是可乐温度。</p>
+        </div>
+
+        <div class="model-block">
+          <h3>4. 可乐传给冰的热量</h3>
+          <p>冰块项同样来自牛顿冷却定律。模型用剩余冰量 m_ice 近似接触面积：冰越多，通常总表面积越大，传热越快。</p>
+          <div class="formula">
+            <math display="block">
+              <mrow><msub><mi>Q</mi><mtext>ice</mtext></msub><mo>=</mo><msub><mi>k</mi><mtext>ice</mtext></msub><msub><mi>m</mi><mtext>ice</mtext></msub><mo>(</mo><msub><mi>T</mi><mtext>cola</mtext></msub><mo>-</mo><msub><mi>T</mi><mtext>ice</mtext></msub><mo>)</mo><mi>Δt</mi></mrow>
+            </math>
+          </div>
+          <p class="symbols">符号说明：Q_ice 是可乐传给冰的热量；k_ice = h_ice·α；A_ice ≈ α·m_ice。</p>
+        </div>
+
+        <div class="model-block">
+          <h3>5. 冰的升温与融化</h3>
+          <p>冰拿到热量后并不会立刻全部变成水。若冰温低于 0°C，热量先用于把冰升温到 0°C；达到 0°C 后，后续热量主要用于相变融化。</p>
+          <div class="formula">
+            <math display="block">
+              <mrow><msub><mi>Q</mi><mtext>warm</mtext></msub><mo>=</mo><msub><mi>m</mi><mtext>ice</mtext></msub><msub><mi>c</mi><mtext>ice</mtext></msub><mo>(</mo><mn>0</mn><mo>-</mo><msub><mi>T</mi><mtext>ice</mtext></msub><mo>)</mo></mrow>
+            </math>
+            <math display="block">
+              <mrow><mi>dm</mi><mo>=</mo><mfrac><msub><mi>Q</mi><mtext>left</mtext></msub><mrow><msub><mi>L</mi><mtext>f</mtext></msub><mo>+</mo><msub><mi>c</mi><mtext>water</mtext></msub><msub><mi>T</mi><mtext>cola</mtext></msub></mrow></mfrac></mrow>
+            </math>
+          </div>
+          <p class="symbols">符号说明：Q_warm 是把冰升温到 0°C 所需热量；L_f 是熔化潜热；dm 是本步融化的冰质量。</p>
+        </div>
+
+        <div class="model-block">
+          <h3>6. 可乐温度的数值更新</h3>
+          <p>可乐的净热量等于环境输入减去冰吸走的热量。模型使用显式欧拉法逐步更新。</p>
+          <div class="formula">
+            <math display="block">
+              <mrow><msub><mi>T</mi><mtext>next</mtext></msub><mo>=</mo><msub><mi>T</mi><mtext>cola</mtext></msub><mo>+</mo><mfrac><msub><mi>Q</mi><mtext>net</mtext></msub><mrow><msub><mi>m</mi><mtext>liquid</mtext></msub><msub><mi>c</mi><mtext>cola</mtext></msub></mrow></mfrac></mrow>
+            </math>
+          </div>
+          <p class="symbols">符号说明：Q_net = Q_env − Q_to_ice；m_liquid = m_cola + m_melted。液体质量越大，同样热量造成的温度变化越小。</p>
+        </div>
+
+        <div class="model-block">
+          <h3>7. 可乐浓度指标</h3>
+          <p>浓度是"原始可乐在液体总量中的质量占比"，用于衡量融冰水造成的稀释。</p>
+          <div class="formula">
+            <math display="block">
+              <mrow><mtext>concentration</mtext><mo>=</mo><mfrac><msub><mi>m</mi><mtext>cola</mtext></msub><mrow><msub><mi>m</mi><mtext>cola</mtext></msub><mo>+</mo><msub><mi>m</mi><mtext>melted</mtext></msub></mrow></mfrac><mo>×</mo><mn>100%</mn></mrow>
+            </math>
+          </div>
+        </div>
+
+        <div class="model-block">
+          <h3>8. 评价指标：口感分数</h3>
+          <p>口感分数满分 100，由温度分项（65 分）和浓度分项（35 分）两部分组成。</p>
+
+          <p style="margin-top:10px"><strong>温度分项（满分 65）</strong>：依据可口可乐 fountain 标准（32–40°F，即 0–4°C 为最佳区间）采用分段线性模型。</p>
+          <div class="formula">
+            <math display="block">
+              <mrow>
+                <msub><mi>S</mi><mi>T</mi></msub><mo>=</mo>
+                <mo>{</mo>
+                <mtable>
+                  <mtr><mtd><mn>65</mn></mtd><mtd><mtext>T ≤ 4°C</mtext></mtd></mtr>
+                  <mtr><mtd><mn>65</mn><mo>×</mo><mfrac><mrow><mn>15</mn><mo>-</mo><mi>T</mi></mrow><mn>11</mn></mfrac></mtd><mtd><mtext>4°C &lt; T ≤ 15°C</mtext></mtd></mtr>
+                  <mtr><mtd><mn>0</mn></mtd><mtd><mtext>T &gt; 15°C</mtext></mtd></mtr>
+                </mtable>
+              </mrow>
+            </math>
+          </div>
+
+          <p style="margin-top:10px"><strong>浓度分项（满分 35）</strong>：基于 2023 年 JND 研究（Valicente et al., Journal of Sensory Studies），可乐甜度的刚可觉察差异约为 8% 相对浓度降低，对应本模型浓度约 92%。低于此阈值才开始有明显感知，因此使用带阈值的分段函数。</p>
+          <div class="formula">
+            <math display="block">
+              <mrow>
+                <msub><mi>S</mi><mi>C</mi></msub><mo>=</mo>
+                <mo>{</mo>
+                <mtable>
+                  <mtr><mtd><mn>35</mn></mtd><mtd><mtext>C ≥ 95%</mtext></mtd></mtr>
+                  <mtr><mtd><mn>35</mn><mo>×</mo><mo>(</mo><mn>0.7</mn><mo>+</mo><mn>0.3</mn><mo>×</mo><mfrac><mrow><mi>C</mi><mo>-</mo><mn>88</mn></mrow><mn>7</mn></mfrac><mo>)</mo></mtd><mtd><mtext>88% ≤ C &lt; 95%</mtext></mtd></mtr>
+                  <mtr><mtd><mn>35</mn><mo>×</mo><mn>0.7</mn><mo>×</mo><mfrac><mrow><mi>C</mi><mo>-</mo><mn>75</mn></mrow><mn>13</mn></mfrac></mtd><mtd><mtext>75% ≤ C &lt; 88%</mtext></mtd></mtr>
+                  <mtr><mtd><mn>0</mn></mtd><mtd><mtext>C &lt; 75%</mtext></mtd></mtr>
+                </mtable>
+              </mrow>
+            </math>
+          </div>
+          <p class="symbols">总分 = S_T + S_C。C 为可乐浓度（原始可乐质量 / 液体总质量）。</p>
+
+          <div class="score-charts">
+            <div>
+              <p class="chart-label">温度得分曲线（满分 65）</p>
+              <canvas id="tempScoreCanvas" width="500" height="220"></canvas>
+            </div>
+            <div>
+              <p class="chart-label">浓度得分曲线（满分 35）</p>
+              <canvas id="concScoreCanvas" width="500" height="220"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="model-block">
+          <h3>9. 模型边界</h3>
+          <p>这个模型适合解释趋势，但不是完整流体热传导仿真。它没有显式计算冰块真实几何形状、搅拌产生的对流、杯壁热容量、二氧化碳逸出和人的主观口味差异。最严谨的使用方式是把它作为实验设计和数据解释的基线，再用实测温度曲线校准 k_env 与 k_ice。</p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    const fixed = {
+      colaMass: 300, colaTemp: 25, iceTemp: -18, ambientTemp: 25,
+      drinkTime: 5, iceTransfer: 0.075, envTransfer: 0.25,
+      colaCp: 4.0, waterCp: 4.18, iceCp: 2.1, fusion: 334.0,
+      dt: 0.5, totalSeconds: 15 * 60
+    };
+
+    const C = {
+      bg: '#f9fafb', grid: '#e5e7eb', text: '#6b7280',
+      blue: '#3b82f6', red: '#dc2626', green: '#16a34a', gold: '#d97706',
+      greenFill: 'rgba(22,163,74,0.08)', border: '#e5e7eb'
+    };
+
+    const iceSlider = document.getElementById("iceMass");
+    const timeSlider = document.getElementById("timeMins");
+    const el = {
+      iceMassVal: document.getElementById("iceMassVal"),
+      timeVal: document.getElementById("timeVal"),
+    };
+
+    function simulate(iceMass) {
+      const n = Math.floor(fixed.totalSeconds / fixed.dt) + 1;
+      const rows = [];
+      let T = fixed.colaTemp, ice = iceMass, melted = 0;
+      let liquid = fixed.colaMass, iceTemp = fixed.iceTemp;
+
+      for (let i = 0; i < n; i++) {
+        rows.push({
+          timeMin: i * fixed.dt / 60,
+          temperature: T, ice, melted,
+          dilution: melted / fixed.colaMass * 100,
+          concentration: fixed.colaMass / (fixed.colaMass + melted) * 100
+        });
+
+        const qEnv = fixed.envTransfer * (fixed.ambientTemp - T) * fixed.dt;
+        let qToIce = 0, dm = 0;
+
+        if (ice > 1e-9 && T > 0) {
+          const surfaceT = Math.max(iceTemp, 0);
+          let qAvailable = fixed.iceTransfer * ice * Math.max(T - surfaceT, 0) * fixed.dt;
+
+          if (iceTemp < 0) {
+            const qWarmNeed = ice * fixed.iceCp * (0 - iceTemp);
+            const qWarm = Math.min(qAvailable, qWarmNeed);
+            iceTemp += qWarm / (ice * fixed.iceCp);
+            qToIce += qWarm;
+            qAvailable -= qWarm;
+          }
+
+          if (qAvailable > 0 && iceTemp >= -1e-9) {
+            const heatPerMelt = fixed.fusion + fixed.waterCp * Math.max(T, 0);
+            dm = Math.min(ice, qAvailable / heatPerMelt);
+            qToIce += dm * heatPerMelt;
+          }
+        }
+
+        const heatCapacity = liquid * fixed.colaCp;
+        T = Math.max(T + (qEnv - qToIce) / heatCapacity, ice - dm > 1e-9 ? 0 : -5);
+        ice = Math.max(0, ice - dm);
+        melted += dm;
+        liquid += dm;
+        if (ice <= 1e-9) iceTemp = 0;
+      }
+      return rows;
+    }
+
+    function atMinute(rows, minute) {
+      let best = rows[0], bestDelta = Infinity;
+      for (const row of rows) {
+        const delta = Math.abs(row.timeMin - minute);
+        if (delta < bestDelta) { best = row; bestDelta = delta; }
+      }
+      return best;
+    }
+
+    function temperatureSuitability(T) {
+      if (T <= 4.4) return 100;
+      if (T <= 15) return 100 * (15 - T) / (15 - 4.4);
+      return 0;
+    }
+
+    function tempScoreVal(T) {
+      return 65 * temperatureSuitability(T) / 100;
+    }
+
+    function concScoreVal(c) {
+      if (c >= 95) return 35;
+      if (c >= 88) return 35 * (0.7 + 0.3 * (c - 88) / 7);
+      if (c >= 75) return 35 * 0.7 * (c - 75) / 13;
+      return 0;
+    }
+
+    function tasteScore(row) {
+      return Math.max(0, Math.min(100, tempScoreVal(row.temperature) + concScoreVal(row.concentration)));
+    }
+
+    function drawScoreChart(canvas, xMin, xMax, xLabel, yMax, yLabel, scoreFn, color, ticks) {
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width, h = canvas.height;
+      const pad = { left: 42, right: 14, top: 14, bottom: 36 };
+      const plotW = w - pad.left - pad.right, plotH = h - pad.top - pad.bottom;
+      const xp = v => pad.left + (v - xMin) / (xMax - xMin) * plotW;
+      const yp = v => pad.top + (1 - v / yMax) * plotH;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, h);
+
+      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+      ctx.font = "11px system-ui, sans-serif"; ctx.fillStyle = C.text;
+
+      for (const t of ticks.x) {
+        const xx = xp(t);
+        ctx.beginPath(); ctx.moveTo(xx, pad.top); ctx.lineTo(xx, pad.top + plotH); ctx.stroke();
+        ctx.fillText(String(t), xx - 8, h - 10);
+      }
+      for (const t of ticks.y) {
+        const yy = yp(t);
+        ctx.beginPath(); ctx.moveTo(pad.left, yy); ctx.lineTo(pad.left + plotW, yy); ctx.stroke();
+        ctx.fillText(String(t), 4, yy + 4);
+      }
+
+      ctx.strokeStyle = C.border; ctx.lineWidth = 1;
+      ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+
+      ctx.fillStyle = color + '22';
+      ctx.beginPath();
+      ctx.moveTo(xp(xMin), yp(0));
+      for (let i = 0; i <= 120; i++) {
+        const xv = xMin + (xMax - xMin) * i / 120;
+        ctx.lineTo(xp(xv), yp(scoreFn(xv)));
+      }
+      ctx.lineTo(xp(xMax), yp(0));
+      ctx.closePath(); ctx.fill();
+
+      ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      for (let i = 0; i <= 120; i++) {
+        const xv = xMin + (xMax - xMin) * i / 120;
+        i === 0 ? ctx.moveTo(xp(xv), yp(scoreFn(xv))) : ctx.lineTo(xp(xv), yp(scoreFn(xv)));
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = C.text;
+      ctx.fillText(xLabel, pad.left + plotW / 2 - 14, h - 0);
+      ctx.save();
+      ctx.translate(10, pad.top + plotH / 2 + 16);
+      ctx.rotate(-Math.PI / 2); ctx.fillText(yLabel, 0, 0);
+      ctx.restore();
+    }
+
+    function drawScoreCharts() {
+      const tc = document.getElementById("tempScoreCanvas");
+      tc.width = tc.clientWidth; tc.height = tc.clientHeight;
+      drawScoreChart(tc, 0, 30, "温度 (°C)", 65, "分", tempScoreVal, C.blue,
+        { x: [0, 4, 10, 15, 20, 30], y: [0, 20, 40, 65] });
+
+      const cc = document.getElementById("concScoreCanvas");
+      cc.width = cc.clientWidth; cc.height = cc.clientHeight;
+      drawScoreChart(cc, 60, 100, "浓度 (%)", 35, "分", concScoreVal, C.red,
+        { x: [60, 70, 75, 80, 88, 95, 100], y: [0, 10, 20, 35] });
+    }
+
+    function scanIce(minute) {
+      const rows = [];
+      for (let ice = 0; ice <= 300; ice += 5) {
+        const sim = simulate(ice);
+        const row = atMinute(sim, minute);
+        rows.push({ ice, temperature: row.temperature, dilution: row.dilution,
+          temperatureSuitability: temperatureSuitability(row.temperature),
+          concentration: row.concentration, melted: row.melted, score: tasteScore(row) });
+      }
+      return rows;
+    }
+
+    function drawCurve(canvas, current) {
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width, h = canvas.height;
+      const pad = { left: 52, right: 56, top: 20, bottom: 42 };
+      const plotW = w - pad.left - pad.right, plotH = h - pad.top - pad.bottom;
+      const x = v => pad.left + v / 15 * plotW;
+      const y = v => pad.top + (1 - v / 30) * plotH;
+      const yPct = v => pad.top + (1 - v / 100) * plotH;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = C.greenFill;
+      ctx.fillRect(pad.left, y(6), plotW, y(0) - y(6));
+
+      drawGrid(ctx, pad, plotW, plotH, w, h, 15, 30, "时间 (min)", "温度 (°C)");
+      drawRightAxis(ctx, pad, plotW, plotH, w, "可乐浓度 (%)");
+      drawLine(ctx, current.map(r => [r.timeMin, r.temperature]), x, y, C.blue, 2.5);
+      drawLine(ctx, current.map(r => [r.timeMin, r.concentration]), x, yPct, C.red, 2);
+    }
+
+    function drawRightAxis(ctx, pad, plotW, plotH, w, label) {
+      const axisX = pad.left + plotW;
+      const y = v => pad.top + (1 - v / 100) * plotH;
+      ctx.save();
+      ctx.strokeStyle = C.text; ctx.fillStyle = C.text;
+      ctx.lineWidth = 1; ctx.font = "12px system-ui, sans-serif";
+      ctx.beginPath(); ctx.moveTo(axisX, pad.top); ctx.lineTo(axisX, pad.top + plotH); ctx.stroke();
+      for (let pct = 0; pct <= 100; pct += 20) {
+        const yy = y(pct);
+        ctx.beginPath(); ctx.moveTo(axisX, yy); ctx.lineTo(axisX + 4, yy); ctx.stroke();
+        ctx.fillText(pct.toString(), axisX + 8, yy + 4);
+      }
+      ctx.translate(w - 10, pad.top + plotH / 2 + 40);
+      ctx.rotate(-Math.PI / 2); ctx.fillText(label, 0, 0);
+      ctx.restore();
+    }
+
+    function drawScan(canvas, scan) {
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width, h = canvas.height;
+      const pad = { left: 50, right: 52, top: 20, bottom: 42 };
+      const plotW = w - pad.left - pad.right, plotH = h - pad.top - pad.bottom;
+      const x = v => pad.left + v / 300 * plotW;
+      const yTemp = v => pad.top + (1 - v / 30) * plotH;
+      const yPct = v => pad.top + (1 - v / 100) * plotH;
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, h);
+      drawGrid(ctx, pad, plotW, plotH, w, h, 300, 30, "冰量 (g)", "温度 (°C)");
+      drawRightAxis(ctx, pad, plotW, plotH, w, "浓度 (%)");
+      drawLine(ctx, scan.map(r => [r.ice, r.temperature]), x, yTemp, C.blue, 2.5);
+      drawLine(ctx, scan.map(r => [r.ice, r.concentration]), x, yPct, C.red, 2);
+
+      const minConc = scan.reduce((best, row) =>
+        row.concentration < best.concentration ? row : best, scan[0]);
+      const px = x(minConc.ice);
+      const py = yPct(minConc.concentration);
+      ctx.save();
+      ctx.fillStyle = C.red;
+      ctx.strokeStyle = C.bg;
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.stroke(); ctx.fill();
+
+      const label = `最低浓度 ${minConc.concentration.toFixed(1)}%`;
+      const detail = `${minConc.ice} g 冰`;
+      ctx.font = "12px system-ui, sans-serif";
+      const boxW = Math.max(ctx.measureText(label).width, ctx.measureText(detail).width) + 16;
+      const boxH = 42;
+      const boxX = Math.min(Math.max(px + 10, pad.left + 4), pad.left + plotW - boxW - 4);
+      const boxY = Math.min(Math.max(py - boxH - 10, pad.top + 4), pad.top + plotH - boxH - 4);
+      ctx.fillStyle = "rgba(255, 252, 246, 0.94)";
+      ctx.strokeStyle = C.red;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(boxX, boxY, boxW, boxH, 6);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = C.red;
+      ctx.fillText(label, boxX + 8, boxY + 16);
+      ctx.fillStyle = C.text;
+      ctx.fillText(detail, boxX + 8, boxY + 32);
+      ctx.restore();
+    }
+
+    function drawGrid(ctx, pad, plotW, plotH, w, h, xMax, yMax, xLabel, yLabel) {
+      const x = v => pad.left + v / xMax * plotW;
+      const y = v => pad.top + (1 - v / yMax) * plotH;
+      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+      ctx.font = "12px system-ui, sans-serif"; ctx.fillStyle = C.text;
+
+      for (let i = 0; i <= 5; i++) {
+        const xv = xMax * i / 5;
+        ctx.beginPath(); ctx.moveTo(x(xv), pad.top); ctx.lineTo(x(xv), pad.top + plotH); ctx.stroke();
+        ctx.fillText(Math.round(xv).toString(), x(xv) - 8, h - 16);
+      }
+      for (let i = 0; i <= 5; i++) {
+        const yv = yMax * i / 5;
+        ctx.beginPath(); ctx.moveTo(pad.left, y(yv)); ctx.lineTo(pad.left + plotW, y(yv)); ctx.stroke();
+        ctx.fillText(Math.round(yv).toString(), 14, y(yv) + 4);
+      }
+
+      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+      ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+      ctx.fillText(xLabel, pad.left + plotW / 2 - 24, h - 4);
+      ctx.save(); ctx.translate(12, pad.top + plotH / 2 + 32);
+      ctx.rotate(-Math.PI / 2); ctx.fillText(yLabel, 0, 0); ctx.restore();
+    }
+
+    function drawLine(ctx, points, x, y, color, width, dash = []) {
+      ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = width;
+      ctx.setLineDash(dash); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      points.forEach(([px, py], i) => i === 0 ? ctx.moveTo(x(px), y(py)) : ctx.lineTo(x(px), y(py)));
+      ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    function update() {
+      const iceMass = +iceSlider.value;
+      const sim = simulate(iceMass);
+      el.iceMassVal.textContent = `${iceMass} g`;
+      const curveCanvas = document.getElementById("curveCanvas");
+      curveCanvas.width = curveCanvas.clientWidth;
+      curveCanvas.height = curveCanvas.clientHeight;
+      drawCurve(curveCanvas, sim);
+      updateScan();
+    }
+
+    function updateScan() {
+      const minute = +timeSlider.value;
+      el.timeVal.textContent = `${minute % 1 === 0 ? minute : minute.toFixed(1)} min`;
+      const scan = scanIce(minute);
+      const scanCanvas = document.getElementById("scanCanvas");
+      scanCanvas.width = scanCanvas.clientWidth;
+      scanCanvas.height = scanCanvas.clientHeight;
+      drawScan(scanCanvas, scan);
+    }
+
+    iceSlider.addEventListener("input", update);
+    timeSlider.addEventListener("input", updateScan);
+    update();
+    drawScoreCharts();
+  </script>
+</body>
+</html>
