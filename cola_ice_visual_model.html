@@ -728,6 +728,47 @@
       return rows;
     }
 
+    function findThresholdCrossing(rows, key, target) {
+      for (let i = 1; i < rows.length; i++) {
+        const a = rows[i - 1], b = rows[i];
+        const av = a[key], bv = b[key];
+        if ((av - target) * (bv - target) <= 0 && av !== bv) {
+          const ratio = (target - av) / (bv - av);
+          return {
+            timeMin: a.timeMin + ratio * (b.timeMin - a.timeMin),
+            value: target
+          };
+        }
+      }
+      return null;
+    }
+
+    function drawThresholdMarker(ctx, px, py, color, label, detail, pad, plotW, plotH) {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.strokeStyle = C.bg;
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.stroke(); ctx.fill();
+
+      ctx.font = "12px system-ui, sans-serif";
+      const boxW = Math.max(ctx.measureText(label).width, ctx.measureText(detail).width) + 16;
+      const boxH = 42;
+      const boxX = Math.min(Math.max(px + 10, pad.left + 4), pad.left + plotW - boxW - 4);
+      const preferredY = py < pad.top + boxH + 16 ? py + 12 : py - boxH - 12;
+      const boxY = Math.min(Math.max(preferredY, pad.top + 4), pad.top + plotH - boxH - 4);
+      ctx.fillStyle = "rgba(255, 252, 246, 0.94)";
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(boxX, boxY, boxW, boxH, 6);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.fillText(label, boxX + 8, boxY + 16);
+      ctx.fillStyle = C.text;
+      ctx.fillText(detail, boxX + 8, boxY + 32);
+      ctx.restore();
+    }
+
     function drawCurve(canvas, current) {
       const ctx = canvas.getContext("2d");
       const w = canvas.width, h = canvas.height;
@@ -744,6 +785,17 @@
       drawRightAxis(ctx, pad, plotW, plotH, w, "可乐浓度 (%)");
       drawLine(ctx, current.map(r => [r.timeMin, r.temperature]), x, y, C.blue, 2.5);
       drawLine(ctx, current.map(r => [r.timeMin, r.concentration]), x, yPct, C.red, 2);
+
+      const tempCross = findThresholdCrossing(current, "temperature", 4);
+      if (tempCross) {
+        drawThresholdMarker(ctx, x(tempCross.timeMin), y(tempCross.value), C.blue,
+          "4°C", `${tempCross.timeMin.toFixed(1)} min`, pad, plotW, plotH);
+      }
+      const concCross = findThresholdCrossing(current, "concentration", 92);
+      if (concCross) {
+        drawThresholdMarker(ctx, x(concCross.timeMin), yPct(concCross.value), C.red,
+          "92% 浓度", `${concCross.timeMin.toFixed(1)} min`, pad, plotW, plotH);
+      }
     }
 
     function drawRightAxis(ctx, pad, plotW, plotH, w, label) {
