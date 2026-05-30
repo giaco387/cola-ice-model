@@ -380,15 +380,15 @@ HTML = r"""<!doctype html>
       </div>
       <div class="fixed">
         <strong>固定条件</strong>
-        可乐 250 g，初温 25°C；冰块 -18°C；室温 25°C；观察时间 5 分钟。
+        可乐 300 g，初温 25°C；冰块 -18°C；室温 25°C；观察时间 5 分钟。
       </div>
     </header>
 
     <section class="hero">
       <div class="left-stack">
         <div class="panel control">
-          <label for="iceMass">加入冰量 <span id="iceMassVal">120 g</span></label>
-          <input id="iceMass" type="range" min="0" max="300" step="5" value="120" />
+          <label for="iceMass">加入冰量 <span id="iceMassVal">180 g</span></label>
+          <input id="iceMass" type="range" min="0" max="300" step="5" value="180" />
           <div class="ticks">
             <span>不加冰</span>
             <span>少冰</span>
@@ -637,7 +637,7 @@ HTML = r"""<!doctype html>
 
   <script>
     const fixed = {
-      colaMass: 250,
+      colaMass: 300,
       colaTemp: 25,
       iceTemp: -18,
       ambientTemp: 25,

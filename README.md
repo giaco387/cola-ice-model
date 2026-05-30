@@ -11,10 +11,8 @@
 ├── cola_ice_model.py              # 批量模拟、生成 CSV、图表和 Markdown 报告
 ├── visual_model_matplotlib.py     # Matplotlib 交互式滑块模型
 ├── generate_visual_model.py       # 生成独立 HTML 可视化页面
-├── cola_ice_visual_model.html     # 由 generate_visual_model.py 生成的浏览器页面
-├── cola_ice_report.md             # 由 cola_ice_model.py 生成的分析报告
-├── templates/report.md            # 报告正文模板
-├── requirements.txt               # Python 依赖
+├── cola_ice_visual_model.html     # 已生成的浏览器可视化页面
+├── cola_ice_report.md             # 已生成的分析报告
 └── outputs/
     ├── cooling_curves.png         # 不同冰量下的降温曲线
     ├── ice_amount_tradeoff.png    # 冰量、温度、稀释之间的关系
@@ -46,7 +44,7 @@
 建议使用 Python 3.10 或更新版本。
 
 ```bash
-pip install -r requirements.txt
+pip install numpy pandas matplotlib
 ```
 
 ## 使用方法
@@ -80,17 +78,6 @@ python generate_visual_model.py
 ```
 
 然后直接用浏览器打开 `cola_ice_visual_model.html`。
-
-## 生成物和发布
-
-`cola_ice_visual_model.html` 和 `cola_ice_report.md` 是仓库中保留的生成物，方便 GitHub Pages 和读者直接打开。修改模型、页面文案或报告模板后，建议重新运行：
-
-```bash
-python cola_ice_model.py
-python generate_visual_model.py
-```
-
-`outputs/` 目录包含本地生成的 CSV 和图片，默认被 `.gitignore` 忽略。如果需要把报告里的图片一并发布到 GitHub Pages，可以临时移除这条忽略规则，或改用单独的发布流程拷贝这些图片。
 
 ## 输出结果怎么读
 
