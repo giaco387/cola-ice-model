@@ -234,15 +234,16 @@
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px 14px;
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--muted);
+      gap: 10px 18px;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
     }
 
-    .key { display: inline-flex; align-items: center; gap: 6px; }
+    .key { display: inline-flex; align-items: center; gap: 7px; }
 
-    .swatch { width: 18px; height: 2.5px; border-radius: 99px; background: var(--blue2); }
+    .swatch { width: 24px; height: 3px; border-radius: 99px; background: var(--blue2); }
     .swatch.red { background: var(--red); }
     .swatch.green { background: var(--green); }
     .swatch.gold { background: var(--gold); }
@@ -255,6 +256,21 @@
 
     /* ── Modeling ── */
     .modeling { padding: 24px; margin-top: 16px; }
+
+    .standard-panel { padding: 24px; margin-top: 16px; }
+
+    .standard-panel h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .standard-intro {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
 
     .section-chip {
       display: inline-block;
@@ -318,7 +334,7 @@
       line-height: 1.65;
     }
 
-    .score-charts {
+    .standard-charts {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
@@ -331,7 +347,7 @@
       margin-bottom: 6px;
     }
 
-    .score-charts canvas {
+    .standard-charts canvas {
       display: block;
       width: 100%;
       height: 160px;
@@ -346,9 +362,20 @@
     }
 
     @media (max-width: 560px) {
-      main { width: calc(100vw - 20px); padding-top: 24px; }
-      .chart canvas { height: 260px; }
-      .ice-value { font-size: 28px; }
+      main { width: calc(100vw - 16px); padding-top: 18px; padding-bottom: 36px; }
+      header { padding-bottom: 16px; margin-bottom: 14px; }
+      .opening-comic { margin-bottom: 14px; border-radius: 10px; }
+      .takeaway { margin-bottom: 14px; padding-bottom: 14px; }
+      .takeaway p { font-size: 17px; line-height: 1.5; }
+      .takeaway p + p { font-size: 15px; }
+      .control { padding: 18px 20px; }
+      .ice-value { font-size: 30px; }
+      .chart { padding: 14px 12px; }
+      .chart canvas { flex: none; height: 300px; min-height: 300px; }
+      .legend { font-size: 15px; gap: 10px 20px; }
+      .standard-panel, .modeling { padding: 18px 16px; }
+      .standard-charts { grid-template-columns: 1fr; }
+      .standard-charts canvas { height: 180px; }
     }
 
     @media (max-width: 560px) {
@@ -414,6 +441,22 @@
       </div>
     </section>
 
+
+    <section class="panel standard-panel">
+      <h2>读图标准</h2>
+      <p class="standard-intro">图中的 4°C 和 92% 浓度是两个参考线：一个表示接近冰镇口感的温度区间，另一个表示甜度开始容易被察觉变淡的浓度阈值。</p>
+      <div class="standard-charts">
+        <div>
+          <p class="chart-label">温度标准：0-4°C 为最佳冰镇区间</p>
+          <canvas id="tempScoreCanvas" width="500" height="220"></canvas>
+        </div>
+        <div>
+          <p class="chart-label">浓度标准：92% 附近开始明显变淡</p>
+          <canvas id="concScoreCanvas" width="500" height="220"></canvas>
+        </div>
+      </div>
+      <p class="symbols">温度标准参考 Coca-Cola fountain 成品饮料 32-40°F（约 0-4.4°C）的冷饮区间；浓度标准参考甜度刚可觉察差异，约 8% 相对浓度降低，对应本模型约 92% 可乐浓度。</p>
+    </section>
     <section class="panel modeling">
       <h2>完整建模过程</h2>
       <div class="modeling-grid">
@@ -497,55 +540,7 @@
         </div>
 
         <div class="model-block">
-          <h3>8. 评价指标：口感分数</h3>
-          <p>口感分数满分 100，由温度分项（65 分）和浓度分项（35 分）两部分组成。</p>
-
-          <p style="margin-top:10px"><strong>温度分项（满分 65）</strong>：依据可口可乐 fountain 标准（32–40°F，即 0–4°C 为最佳区间）采用分段线性模型。</p>
-          <div class="formula">
-            <math display="block">
-              <mrow>
-                <msub><mi>S</mi><mi>T</mi></msub><mo>=</mo>
-                <mo>{</mo>
-                <mtable>
-                  <mtr><mtd><mn>65</mn></mtd><mtd><mtext>T ≤ 4°C</mtext></mtd></mtr>
-                  <mtr><mtd><mn>65</mn><mo>×</mo><mfrac><mrow><mn>15</mn><mo>-</mo><mi>T</mi></mrow><mn>11</mn></mfrac></mtd><mtd><mtext>4°C &lt; T ≤ 15°C</mtext></mtd></mtr>
-                  <mtr><mtd><mn>0</mn></mtd><mtd><mtext>T &gt; 15°C</mtext></mtd></mtr>
-                </mtable>
-              </mrow>
-            </math>
-          </div>
-
-          <p style="margin-top:10px"><strong>浓度分项（满分 35）</strong>：基于 2023 年 JND 研究（Valicente et al., Journal of Sensory Studies），可乐甜度的刚可觉察差异约为 8% 相对浓度降低，对应本模型浓度约 92%。低于此阈值才开始有明显感知，因此使用带阈值的分段函数。</p>
-          <div class="formula">
-            <math display="block">
-              <mrow>
-                <msub><mi>S</mi><mi>C</mi></msub><mo>=</mo>
-                <mo>{</mo>
-                <mtable>
-                  <mtr><mtd><mn>35</mn></mtd><mtd><mtext>C ≥ 95%</mtext></mtd></mtr>
-                  <mtr><mtd><mn>35</mn><mo>×</mo><mo>(</mo><mn>0.7</mn><mo>+</mo><mn>0.3</mn><mo>×</mo><mfrac><mrow><mi>C</mi><mo>-</mo><mn>88</mn></mrow><mn>7</mn></mfrac><mo>)</mo></mtd><mtd><mtext>88% ≤ C &lt; 95%</mtext></mtd></mtr>
-                  <mtr><mtd><mn>35</mn><mo>×</mo><mn>0.7</mn><mo>×</mo><mfrac><mrow><mi>C</mi><mo>-</mo><mn>75</mn></mrow><mn>13</mn></mfrac></mtd><mtd><mtext>75% ≤ C &lt; 88%</mtext></mtd></mtr>
-                  <mtr><mtd><mn>0</mn></mtd><mtd><mtext>C &lt; 75%</mtext></mtd></mtr>
-                </mtable>
-              </mrow>
-            </math>
-          </div>
-          <p class="symbols">总分 = S_T + S_C。C 为可乐浓度（原始可乐质量 / 液体总质量）。</p>
-
-          <div class="score-charts">
-            <div>
-              <p class="chart-label">温度得分曲线（满分 65）</p>
-              <canvas id="tempScoreCanvas" width="500" height="220"></canvas>
-            </div>
-            <div>
-              <p class="chart-label">浓度得分曲线（满分 35）</p>
-              <canvas id="concScoreCanvas" width="500" height="220"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="model-block">
-          <h3>9. 模型边界</h3>
+          <h3>8. 模型边界</h3>
           <p>这个模型适合解释趋势，但不是完整流体热传导仿真。它没有显式计算冰块真实几何形状、搅拌产生的对流、杯壁热容量、二氧化碳逸出和人的主观口味差异。最严谨的使用方式是把它作为实验设计和数据解释的基线，再用实测温度曲线校准 k_env 与 k_ice。</p>
         </div>
       </div>
@@ -562,8 +557,8 @@
     };
 
     const C = {
-      bg: '#f9fafb', grid: '#e5e7eb', text: '#6b7280',
-      blue: '#3b82f6', red: '#dc2626', green: '#16a34a', gold: '#d97706',
+      bg: '#ffffff', grid: '#d8dee8', axis: '#6b7280', text: '#374151', label: '#111827',
+      blue: '#2563eb', red: '#dc2626', green: '#16a34a', gold: '#d97706',
       greenFill: 'rgba(22,163,74,0.08)', border: '#e5e7eb'
     };
 
@@ -573,6 +568,17 @@
       iceMassVal: document.getElementById("iceMassVal"),
       timeVal: document.getElementById("timeVal"),
     };
+
+    function sizeCanvas(canvas) {
+      const ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const cssWidth = Math.round(canvas.clientWidth);
+      const cssHeight = Math.round(canvas.clientHeight);
+      canvas.width = cssWidth * ratio;
+      canvas.height = cssHeight * ratio;
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      return { ctx, w: cssWidth, h: cssHeight };
+    }
 
     function simulate(iceMass) {
       const n = Math.floor(fixed.totalSeconds / fixed.dt) + 1;
@@ -635,25 +641,23 @@
       return 0;
     }
 
-    function tempScoreVal(T) {
+    function tempStandardVal(T) {
       return 65 * temperatureSuitability(T) / 100;
     }
 
-    function concScoreVal(c) {
+    function concStandardVal(c) {
       if (c >= 95) return 35;
       if (c >= 88) return 35 * (0.7 + 0.3 * (c - 88) / 7);
       if (c >= 75) return 35 * 0.7 * (c - 75) / 13;
       return 0;
     }
 
-    function tasteScore(row) {
-      return Math.max(0, Math.min(100, tempScoreVal(row.temperature) + concScoreVal(row.concentration)));
-    }
-
-    function drawScoreChart(canvas, xMin, xMax, xLabel, yMax, yLabel, scoreFn, color, ticks) {
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width, h = canvas.height;
-      const pad = { left: 42, right: 14, top: 14, bottom: 36 };
+    function drawStandardChart(canvas, xMin, xMax, xLabel, yMax, yLabel, scoreFn, color, ticks) {
+      const { ctx, w, h } = sizeCanvas(canvas);
+      const isNarrow = w < 420;
+      const pad = isNarrow
+        ? { left: 44, right: 12, top: 16, bottom: 38 }
+        : { left: 50, right: 18, top: 18, bottom: 42 };
       const plotW = w - pad.left - pad.right, plotH = h - pad.top - pad.bottom;
       const xp = v => pad.left + (v - xMin) / (xMax - xMin) * plotW;
       const yp = v => pad.top + (1 - v / yMax) * plotH;
@@ -662,7 +666,7 @@
       ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, h);
 
       ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
-      ctx.font = "11px system-ui, sans-serif"; ctx.fillStyle = C.text;
+      ctx.font = `${isNarrow ? 12 : 13}px system-ui, sans-serif`; ctx.fillStyle = C.text;
 
       for (const t of ticks.x) {
         const xx = xp(t);
@@ -675,7 +679,7 @@
         ctx.fillText(String(t), 4, yy + 4);
       }
 
-      ctx.strokeStyle = C.border; ctx.lineWidth = 1;
+      ctx.strokeStyle = C.axis; ctx.lineWidth = 1.2;
       ctx.strokeRect(pad.left, pad.top, plotW, plotH);
 
       ctx.fillStyle = color + '22';
@@ -688,7 +692,7 @@
       ctx.lineTo(xp(xMax), yp(0));
       ctx.closePath(); ctx.fill();
 
-      ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 3.2;
       ctx.lineJoin = 'round'; ctx.lineCap = 'round';
       for (let i = 0; i <= 120; i++) {
         const xv = xMin + (xMax - xMin) * i / 120;
@@ -696,23 +700,24 @@
       }
       ctx.stroke();
 
-      ctx.fillStyle = C.text;
-      ctx.fillText(xLabel, pad.left + plotW / 2 - 14, h - 0);
+      ctx.fillStyle = C.label;
+      ctx.font = `${isNarrow ? 12 : 14}px system-ui, sans-serif`;
+      ctx.fillText(xLabel, pad.left + plotW / 2 - 28, h - 6);
       ctx.save();
-      ctx.translate(10, pad.top + plotH / 2 + 16);
+      ctx.translate(isNarrow ? 12 : 14, pad.top + plotH / 2 + 22);
       ctx.rotate(-Math.PI / 2); ctx.fillText(yLabel, 0, 0);
       ctx.restore();
     }
 
-    function drawScoreCharts() {
+    function drawStandardCharts() {
       const tc = document.getElementById("tempScoreCanvas");
       tc.width = tc.clientWidth; tc.height = tc.clientHeight;
-      drawScoreChart(tc, 0, 30, "温度 (°C)", 65, "分", tempScoreVal, C.blue,
+      drawStandardChart(tc, 0, 30, "温度 (°C)", 65, "分", tempStandardVal, C.blue,
         { x: [0, 4, 10, 15, 20, 30], y: [0, 20, 40, 65] });
 
       const cc = document.getElementById("concScoreCanvas");
       cc.width = cc.clientWidth; cc.height = cc.clientHeight;
-      drawScoreChart(cc, 60, 100, "浓度 (%)", 35, "分", concScoreVal, C.red,
+      drawStandardChart(cc, 60, 100, "浓度 (%)", 35, "分", concStandardVal, C.red,
         { x: [60, 70, 75, 80, 88, 95, 100], y: [0, 10, 20, 35] });
     }
 
@@ -723,7 +728,7 @@
         const row = atMinute(sim, minute);
         rows.push({ ice, temperature: row.temperature, dilution: row.dilution,
           temperatureSuitability: temperatureSuitability(row.temperature),
-          concentration: row.concentration, melted: row.melted, score: tasteScore(row) });
+          concentration: row.concentration, melted: row.melted });
       }
       return rows;
     }
@@ -766,7 +771,7 @@
       ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.stroke(); ctx.fill();
 
-      ctx.font = "12px system-ui, sans-serif";
+      ctx.font = "14px system-ui, sans-serif";
       const boxW = Math.max(ctx.measureText(label).width, ctx.measureText(detail).width) + 16;
       const boxH = 42;
       const boxX = Math.min(Math.max(px + 10, pad.left + 4), pad.left + plotW - boxW - 4);
@@ -774,7 +779,7 @@
       const boxY = Math.min(Math.max(preferredY, pad.top + 4), pad.top + plotH - boxH - 4);
       ctx.fillStyle = "rgba(255, 252, 246, 0.94)";
       ctx.strokeStyle = color;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.4;
       ctx.beginPath();
       ctx.roundRect(boxX, boxY, boxW, boxH, 6);
       ctx.fill(); ctx.stroke();
@@ -786,9 +791,11 @@
     }
 
     function drawCurve(canvas, current) {
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width, h = canvas.height;
-      const pad = { left: 52, right: 56, top: 20, bottom: 42 };
+      const { ctx, w, h } = sizeCanvas(canvas);
+      const isNarrow = w < 520;
+      const pad = isNarrow
+        ? { left: 48, right: 46, top: 22, bottom: 44 }
+        : { left: 62, right: 70, top: 24, bottom: 50 };
       const plotW = w - pad.left - pad.right, plotH = h - pad.top - pad.bottom;
       const x = v => pad.left + v / 15 * plotW;
       const y = v => pad.top + (1 - v / 30) * plotH;
@@ -799,8 +806,8 @@
 
       drawGrid(ctx, pad, plotW, plotH, w, h, 15, 30, "时间 (min)", "温度 (°C)");
       drawRightAxis(ctx, pad, plotW, plotH, w, "可乐浓度 (%)");
-      drawLine(ctx, current.map(r => [r.timeMin, r.temperature]), x, y, C.blue, 2.5);
-      drawLine(ctx, current.map(r => [r.timeMin, r.concentration]), x, yPct, C.red, 2);
+      drawLine(ctx, current.map(r => [r.timeMin, r.temperature]), x, y, C.blue, 3.2);
+      drawLine(ctx, current.map(r => [r.timeMin, r.concentration]), x, yPct, C.red, 2.8);
 
       const tempCross = findThresholdCrossing(current, "temperature", 4);
       if (tempCross) {
@@ -815,26 +822,31 @@
     }
 
     function drawRightAxis(ctx, pad, plotW, plotH, w, label) {
+      const isNarrow = w < 520;
       const axisX = pad.left + plotW;
       const y = v => pad.top + (1 - v / 100) * plotH;
       ctx.save();
-      ctx.strokeStyle = C.text; ctx.fillStyle = C.text;
-      ctx.lineWidth = 1; ctx.font = "12px system-ui, sans-serif";
+      ctx.strokeStyle = C.axis; ctx.fillStyle = C.text;
+      ctx.lineWidth = 1.2; ctx.font = `${isNarrow ? 12 : 14}px system-ui, sans-serif`;
       ctx.beginPath(); ctx.moveTo(axisX, pad.top); ctx.lineTo(axisX, pad.top + plotH); ctx.stroke();
       for (let pct = 0; pct <= 100; pct += 20) {
         const yy = y(pct);
         ctx.beginPath(); ctx.moveTo(axisX, yy); ctx.lineTo(axisX + 4, yy); ctx.stroke();
-        ctx.fillText(pct.toString(), axisX + 8, yy + 4);
+        ctx.fillText(pct.toString(), axisX + (isNarrow ? 6 : 8), yy + 4);
       }
-      ctx.translate(w - 10, pad.top + plotH / 2 + 40);
-      ctx.rotate(-Math.PI / 2); ctx.fillText(label, 0, 0);
+      if (!isNarrow) {
+        ctx.translate(w - 10, pad.top + plotH / 2 + 40);
+        ctx.rotate(-Math.PI / 2); ctx.fillText(label, 0, 0);
+      }
       ctx.restore();
     }
 
     function drawScan(canvas, scan) {
-      const ctx = canvas.getContext("2d");
-      const w = canvas.width, h = canvas.height;
-      const pad = { left: 50, right: 52, top: 20, bottom: 42 };
+      const { ctx, w, h } = sizeCanvas(canvas);
+      const isNarrow = w < 520;
+      const pad = isNarrow
+        ? { left: 48, right: 46, top: 22, bottom: 44 }
+        : { left: 62, right: 70, top: 24, bottom: 50 };
       const plotW = w - pad.left - pad.right, plotH = h - pad.top - pad.bottom;
       const x = v => pad.left + v / 300 * plotW;
       const yTemp = v => pad.top + (1 - v / 30) * plotH;
@@ -844,8 +856,8 @@
       ctx.fillStyle = C.bg; ctx.fillRect(0, 0, w, h);
       drawGrid(ctx, pad, plotW, plotH, w, h, 300, 30, "冰量 (g)", "温度 (°C)");
       drawRightAxis(ctx, pad, plotW, plotH, w, "浓度 (%)");
-      drawLine(ctx, scan.map(r => [r.ice, r.temperature]), x, yTemp, C.blue, 2.5);
-      drawLine(ctx, scan.map(r => [r.ice, r.concentration]), x, yPct, C.red, 2);
+      drawLine(ctx, scan.map(r => [r.ice, r.temperature]), x, yTemp, C.blue, 3.2);
+      drawLine(ctx, scan.map(r => [r.ice, r.concentration]), x, yPct, C.red, 2.8);
 
       findThresholdCrossings(scan, "ice", "temperature", 4).forEach(crossing => {
         drawThresholdMarker(ctx, x(crossing.xValue), yTemp(crossing.value), C.blue,
@@ -868,14 +880,14 @@
 
       const label = `最低浓度 ${minConc.concentration.toFixed(1)}%`;
       const detail = `${minConc.ice} g 冰`;
-      ctx.font = "12px system-ui, sans-serif";
+      ctx.font = "14px system-ui, sans-serif";
       const boxW = Math.max(ctx.measureText(label).width, ctx.measureText(detail).width) + 16;
       const boxH = 42;
       const boxX = Math.min(Math.max(px + 10, pad.left + 4), pad.left + plotW - boxW - 4);
       const boxY = Math.min(Math.max(py - boxH - 10, pad.top + 4), pad.top + plotH - boxH - 4);
       ctx.fillStyle = "rgba(255, 252, 246, 0.94)";
       ctx.strokeStyle = C.red;
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.4;
       ctx.beginPath();
       ctx.roundRect(boxX, boxY, boxW, boxH, 6);
       ctx.fill(); ctx.stroke();
@@ -887,10 +899,11 @@
     }
 
     function drawGrid(ctx, pad, plotW, plotH, w, h, xMax, yMax, xLabel, yLabel) {
+      const isNarrow = w < 520;
       const x = v => pad.left + v / xMax * plotW;
       const y = v => pad.top + (1 - v / yMax) * plotH;
-      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
-      ctx.font = "12px system-ui, sans-serif"; ctx.fillStyle = C.text;
+      ctx.strokeStyle = C.axis; ctx.lineWidth = 1.2;
+      ctx.font = `${isNarrow ? 12 : 14}px system-ui, sans-serif`; ctx.fillStyle = C.text;
 
       for (let i = 0; i <= 5; i++) {
         const xv = xMax * i / 5;
@@ -905,8 +918,10 @@
 
       ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
       ctx.strokeRect(pad.left, pad.top, plotW, plotH);
-      ctx.fillText(xLabel, pad.left + plotW / 2 - 24, h - 4);
-      ctx.save(); ctx.translate(12, pad.top + plotH / 2 + 32);
+      ctx.fillStyle = C.label;
+      ctx.font = `${isNarrow ? 12 : 14}px system-ui, sans-serif`;
+      ctx.fillText(xLabel, pad.left + plotW / 2 - (isNarrow ? 26 : 32), h - 8);
+      ctx.save(); ctx.translate(isNarrow ? 12 : 16, pad.top + plotH / 2 + (isNarrow ? 28 : 36));
       ctx.rotate(-Math.PI / 2); ctx.fillText(yLabel, 0, 0); ctx.restore();
     }
 
@@ -922,8 +937,6 @@
       const sim = simulate(iceMass);
       el.iceMassVal.textContent = `${iceMass} g`;
       const curveCanvas = document.getElementById("curveCanvas");
-      curveCanvas.width = curveCanvas.clientWidth;
-      curveCanvas.height = curveCanvas.clientHeight;
       drawCurve(curveCanvas, sim);
       updateScan();
     }
@@ -933,15 +946,14 @@
       el.timeVal.textContent = `${minute % 1 === 0 ? minute : minute.toFixed(1)} min`;
       const scan = scanIce(minute);
       const scanCanvas = document.getElementById("scanCanvas");
-      scanCanvas.width = scanCanvas.clientWidth;
-      scanCanvas.height = scanCanvas.clientHeight;
       drawScan(scanCanvas, scan);
     }
 
     iceSlider.addEventListener("input", update);
     timeSlider.addEventListener("input", updateScan);
+    window.addEventListener("resize", update);
     update();
-    drawScoreCharts();
+    drawStandardCharts();
   </script>
 </body>
 </html>
